@@ -10,8 +10,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText password;
     private ProgressBar pb;
     private Map<String, String> passwords;
+    private RelativeLayout rl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +45,13 @@ public class MainActivity extends AppCompatActivity {
         passwords.put("prajjwal", "123");
         passwords.put("gipashu", "123");
 
+
         greet = findViewById(R.id.greet);
         name = findViewById(R.id.usernameBox);
         btn = findViewById(R.id.btn);
         password = findViewById(R.id.passwordBox);
         pb = findViewById(R.id.pb);
+        rl = findViewById(R.id.parent);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         String correctPassword = passwords.get(name.getText().toString());
         if(!b){
             greet.setVisibility(View.INVISIBLE);
-            Toast.makeText(MainActivity.this, "Invalid Username", Toast.LENGTH_LONG).show();
+            showInvalidUsername();
 
         }
         else{
@@ -74,10 +80,36 @@ public class MainActivity extends AppCompatActivity {
             }
             else {
                 greet.setVisibility(View.INVISIBLE);
-                Toast.makeText(MainActivity.this, "Wrong password", Toast.LENGTH_SHORT).show();
+                showIncorrectPassword();
             }
         }
 
+    }
+
+    private void showIncorrectPassword() {
+        Snackbar.make(rl, "Incorrect Password!", Snackbar.LENGTH_INDEFINITE)
+                .setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        password.setText("");
+
+                    }
+                })
+                .show();
+    }
+    
+
+    private void showInvalidUsername() {
+        Snackbar.make(rl, "Invalid Username!", Snackbar.LENGTH_INDEFINITE)
+                .setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        name.setText("");
+                        password.setText("");
+
+                    }
+                })
+                .show();
     }
 
     private void closeKeyboard() {
@@ -86,5 +118,7 @@ public class MainActivity extends AppCompatActivity {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(),0);
         }
+
+
     }
 }
